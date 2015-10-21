@@ -1,0 +1,119 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.team-charls</groupId>
+    <artifactId>charls</artifactId>
+    <version>1.0.0</version>
+    <packaging>nar</packaging>
+
+    <name>Charls</name>
+    <description>
+        CharLS is a C++ implementation of the JPEG-LS standard for lossless and near-lossless image compression and decompression. JPEG-LS is a low-complexity image compression standard that matches JPEG 2000 compression ratios.
+    </description>
+
+    <properties>
+        <!-- Maven plugin versions -->
+        <nar-plugin.version>3.2.3</nar-plugin.version>
+        <!-- Native project -->
+        <compiler-name>g++</compiler-name>
+        <linker-name>g++</linker-name>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.maven-nar</groupId>
+                <artifactId>nar-maven-plugin</artifactId>
+                <version>${nar-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <cpp>
+                        <name>${compiler-name}</name>
+                        <includes>
+                            <include>**/*.hpp</include>
+                            <include>**/*.h</include>
+                            <include>**/*.cpp</include>
+                            <include>**/*.c</include>
+                        </includes>
+                        <debug>false</debug>
+                        <optimize>full</optimize>
+                        <options combine.children="append">
+                            <option>-std=c++11</option>
+                            <option>-Wall</option>
+                            <option>-Wextra</option>
+                            <option>-pedantic</option>
+                            <option>-fvisibility=hidden</option>
+                            <option>-fomit-frame-pointer</option>
+                            <option>-momit-leaf-frame-pointer</option>
+                            <option>-fweb</option>
+                            <option>-ftracer</option>
+                        </options>
+                    </cpp>
+                    <linker>
+                        <name>${linker-name}</name>
+                    </linker>
+                    <libraries>
+                        <library>
+                            <type>shared</type>
+                        </library>
+                    </libraries>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <profiles>
+        <profile>
+            <id>windows-common</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cpp>
+                                <options combine.children="append">
+                                    <option>-mthreads</option>
+                                </options>
+                            </cpp>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>linux-common</id>
+            <activation>
+                <os>
+                    <family>linux</family>
+                </os>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.maven-nar</groupId>
+                        <artifactId>nar-maven-plugin</artifactId>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cpp>
+                                <options combine.children="append">
+                                    <option>-pthread</option>
+                                </options>
+                            </cpp>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+
